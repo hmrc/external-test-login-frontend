@@ -39,18 +39,7 @@
 
     @hmrcHead(
         nonce     = CSPNonce.get,
-        headBlock = if(timeout) { Some(
-            hmrcTimeoutDialog(TimeoutDialog(
-                timeout             = Some(appConfig.timeout),
-                countdown           = Some(appConfig.countdown),
-                keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
-                keepAliveButtonText = Some(messages("timeout.keepAlive")),
-                signOutUrl          = Some(controllers.auth.routes.AuthController.signOut.url),
-                signOutButtonText   = Some(messages("timeout.signOut")),
-                title               = Some(messages("timeout.title")),
-                message             = Some(messages("timeout.message"))
-            )))
-        } else None
+        headBlock = None
     )
 
     <link href="@routes.Assets.versioned("stylesheets/application.css")" media="all" rel="stylesheet" type="text/css"@CSPNonce.get.map {n=> nonce="@n"} />
@@ -61,14 +50,6 @@
 }
 
 @beforeContent = {
-
-    @if(appConfig.languageTranslationEnabled) {
-        @hmrcLanguageSelect(LanguageSelect(
-            if (messages.lang.code == "cy") Cy else En,
-            (En, routes.LanguageSwitchController.switchToLanguage("en").url),
-            (Cy, routes.LanguageSwitchController.switchToLanguage("cy").url)
-        ))
-    }
 
     @if(showBackLink) {
         @govukBackLink(BackLinkViewModel(href = "#").withCssClass("js-visible"))
@@ -88,7 +69,7 @@
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.IndexController.onPageLoad.url),
-        signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+        signOutUrl  = None,
         phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
     )),
     beforeContentBlock = Some(beforeContent),
