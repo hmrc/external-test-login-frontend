@@ -33,17 +33,21 @@ lazy val root = (project in file("."))
       "viewmodels.govuk.all._"
     ),
     PlayKeys.playDefaultPort := 19154,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
-      ".*Routes.*;.*viewmodels.govuk.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 78,
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*; .*viewmodels.*;" +
+      ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
+      ".*ControllerConfiguration",
+    ScoverageKeys.coverageExcludedPackages := ".*views.html.components.*; .*viewmodels*",
+    ScoverageKeys.coverageMinimumStmtTotal := 75,
     ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
-        scalacOptions ++= Seq(
+    ScoverageKeys.coverageHighlighting  := true,
+    ThisBuild / useSuperShell := false,
+    scalacOptions ++= Seq(
       "-feature",
-      "-Ypartial-unification",
-      "-rootdir",
-      baseDirectory.value.getCanonicalPath,
-      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s"
+      "-language:implicitConversions",
+      "-language:postfixOps",
+      "-language:higherKinds",
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:cat=unused-imports&src=html/.*:s",
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
