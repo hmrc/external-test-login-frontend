@@ -42,3 +42,4 @@ project/metals.sbt
 .hydra
 /.bsp/sbt.json
 .java-version
+!.scalafmt.conf
