@@ -49,12 +49,7 @@
     <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
 }
 
-@beforeContent = {
-
-    @if(showBackLink) {
-        @govukBackLink(BackLinkViewModel(href = "#").withCssClass("js-visible"))
-    }
-}
+@beforeContent = {}
 
 @content = {
     @contentBlock
