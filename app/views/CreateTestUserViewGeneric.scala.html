@@ -1,0 +1,77 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.CreateUserForm
+@import models.FieldDefinitions
+@import models.UserTypes.{INDIVIDUAL, ORGANISATION}
+@import views.html.govuk_wrapper
+@import config.FrontendAppConfig
+@import models.Service
+@import views.html.includes._
+
+
+@this(govUkWrapper: govuk_wrapper)
+
+@(services: Seq[Service], form: Form[CreateUserForm])(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+
+@govUkWrapper(pageTitle = Some("Create test user - HMRC External Test - GOV.UK")) {
+    <h1 class="govuk-heading-xl">Create a test user for a given service</h1>
+    @errorSummary(form)
+    <p class="govuk-body">
+        A test user is a dummy Government Gateway user ID used for testing a given service in the sandbox with the required enrolment.
+    </p>
+    <p class="govuk-body">
+        A test user ID has:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>a type - individual, organisation or agent</li>
+        <li>a password</li>
+        <li>a service enrolment</li>
+    </ul>
+    <p class="govuk-body">
+        Test users and other test data are no longer cleared down every two weeks.
+    </p>
+
+
+    @helper.form(action = controllers.routes.TestUserController.createUserGeneric()) {
+        @helper.CSRF.formField
+
+       <div class="govuk-form-group @if(form.errors("serviceSelection").nonEmpty) {govuk-form-group--error}">
+            <fieldset id="serviceSelection" class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h2 class="govuk-fieldset__heading">
+                        Choose the service you need
+                    </h2>
+                </legend>
+                @fieldError(form.errors, "serviceSelection")
+                <div class="govuk-radios">
+                @services.map(s =>
+                <p>
+                    <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" type="radio" id={ s.key } name="serviceSelection" value= { s.key }/>
+                    <label class="govuk-label govuk-radios__label" data-type="organisation">
+                        <b> { s.name } </b>
+                    </label>
+                </div>
+                </p>
+                )
+                </div>
+            </fieldset>
+      </div>
+
+      <button id="submit" class="govuk-button" data-module="govuk-button" type="submit">Create</button>
+    }
+}

@@ -1,0 +1,146 @@
+.header__menu .header__menu__proposition-links {
+    float: none;
+}
+
+.service-info {
+    .header__menu__proposition-links {
+        margin-top: 0em;
+
+         .link-style {
+            color: #005ea5;
+            font-weight: normal;
+            text-decoration: underline;
+        }
+    }
+}
+
+.govuk-summary-text {
+  color:#1d70b8;
+  &:hover {
+    color: #003078;
+    cursor: pointer;
+  }
+}
+
+.govuk-body {
+  &--word-wrap {
+    word-wrap:break-word;
+  }
+}
+
+.govuk-list {
+  &--no-style {
+    list-style: none;
+    padding-left: 0;
+  }
+}
+
+.beta-banner .phase-tag {
+    background-color: #005ea5;
+}
+
+.header__menu__proposition--sub-header {
+    display: none;
+}
+
+// New register & sign in styles
+
+.govuk-auth-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  float: right;
+}
+
+.govuk-auth-links > *:first-child {
+  padding-right: 15px;
+}
+
+@media (min-width: 769px) {
+  #global-header .header-proposition #proposition-links li {
+    float: left;
+    display: block;
+    width: auto;
+    padding: 0 15px 0 0;
+    border-bottom: 0;
+  }
+  #global-header .header-proposition #proposition-links li.desktop-only {
+    display: none;
+  }
+  #global-header .header-proposition #proposition-links li.clear-child {
+    clear: left;
+  }
+}
+
+@media (min-width: 801px) {
+  .header__menu__proposition--sub-header {
+      display: block;
+  }
+}
+
+@media (min-width: 641px) {
+    .column-three-quarters {
+        float: left;
+        width: 75%;
+    }
+}
+
+.column-three-quarters {
+    padding: 0 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+@media (min-width: 641px) {
+  .inline .multiple-choice {
+    clear: both;
+    float: none;
+  }
+}
+
+// New feedback banner styles
+
+.govuk-highlight-text {
+  color: #fff !important;
+}
+
+.feedback-banner {
+  $blue: #1d70b8;
+  $light-grey: #f3f2f1;
+  border-bottom: 10px solid $blue;
+  #feedback {
+    padding: 25px;
+    background-color: $blue;
+    color: white;
+    overflow: auto;
+    border-bottom: 1px solid white;
+    p {
+      margin: 10px 25px 0 0;
+      font-size: 16px;
+      font-weight: bold;
+      display: inline-block;
+    }
+    button {
+      background-color: $light-grey;
+      color: black;
+      box-shadow: 0 2px 0 black;
+    }
+  }
+  #survey {
+    border-top: 10px solid $blue;
+    display: none;
+    h2 {
+      margin-top: 30px;
+    }
+    button {
+      float: right;
+      margin-top: 30px;
+      margin-right: 5px;
+      background-color: $light-grey;
+      color: black;
+      box-shadow: 0 2px 0 grey;
+    }
+  }
+}

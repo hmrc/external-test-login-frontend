@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+case class NavLink(label: String, href: String, truncate: Boolean = false, openInNewWindow: Boolean = false)
 
-object implicits extends ImplicitConversions
+case object StaticNavLinks {
 
-trait ImplicitConversions {
-
-  implicit def stringToText(string: String)(implicit messages: Messages): Text =
-    Text(messages(string))
-
-  implicit def stringToKey(string: String)(implicit messages: Messages): Key =
-    Key(content = Text(messages(string)))
+  def apply() =
+    Seq(
+      NavLink("Documentation", "/api-documentation/docs/using-the-hub"),
+      NavLink("Applications", "/developer/applications"),
+      NavLink("Support", "/developer/support"),
+      NavLink("Service availability", "https://api-platform-status.production.tax.service.gov.uk/", openInNewWindow = true)
+    )
 }
