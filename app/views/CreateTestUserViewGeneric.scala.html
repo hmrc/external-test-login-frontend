@@ -42,8 +42,18 @@
         <li>a service enrolment</li>
     </ul>
     <p class="govuk-body">
-        Test users and other test data are no longer cleared down every two weeks.
+        Test users and other test data are no longer cleared down every two weeks. You can save this user for future logins.
     </p>
+
+    @config.serviceKeys.map(key =>
+        config.routingLoginUrls.map(url =>
+            if(url.contains(key)) {
+                <p class="govuk-body">
+                    I already have a test user and would like to login to <a class="govuk-link" target="_blank" href={ url.split(",")(1) } > {  url.split(",")(0).replace("-", " ") }</a>
+                </p>
+            }
+       )
+    )
 
 
     @helper.form(action = controllers.routes.TestUserController.createUserGeneric()) {

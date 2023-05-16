@@ -25,7 +25,7 @@
 
 @(user: TestUser)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
-@title = {Generated @user.label.toLowerCase}
+@title = {Test user}
 
 @govUkWrapper(Some(s"$title  - HMRC External Test - GOV.UK")) {
   <h1 class="govuk-heading-xl">@title</h1>
@@ -33,7 +33,7 @@
   <ul class="govuk-list govuk-list--bullet govuk-list--no-style">
     @field(Field("userid", "User ID", user.userId))
     @field(Field("password", "Password", user.password))
-    @user.fields.map(f => field(f))
+    <!-- @user.fields.map(f => field(f)) -->
   </ul>
 
   <p class="govuk-body govuk-!-padding-bottom-4">
