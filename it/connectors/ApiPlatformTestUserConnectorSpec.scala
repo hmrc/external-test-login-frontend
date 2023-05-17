@@ -68,7 +68,7 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
     }
   }
 
-  "createOrganisation" should {
+  "createOrg" should {
     "return a generated organisation" in new Setup {
       private val saUtr    = "1555369052"
       private val empRef   = "555/EIA000"
@@ -112,7 +112,7 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
           )
       )
 
-      val result = await(underTest.createOrganisation(Seq("national-insurance", "self-assessment", "mtd-income-tax")))
+      val result = await(underTest.createOrg(Seq("national-insurance", "self-assessment", "mtd-income-tax")))
 
       result.userId shouldBe userId
       result.password shouldBe password
@@ -129,7 +129,7 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
           )
       )
 
-      intercept[RuntimeException](await(underTest.createOrganisation(Seq("national-insurance", "self-assessment", "mtd-income-tax"))))
+      intercept[RuntimeException](await(underTest.createOrg(Seq("national-insurance", "self-assessment", "mtd-income-tax"))))
     }
   }
 

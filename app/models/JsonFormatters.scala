@@ -16,7 +16,9 @@
 
 package models
 
+import models.UserTypes.ORGANISATION
 import play.api.libs.json.{Format, JsError, JsSuccess, Writes, _}
+import uk.gov.hmrc.play.json.Union
 
 object EnumJson {
 
@@ -42,4 +44,15 @@ object JsonFormatters {
   implicit val formatCreateUserServicesRequest = Json.format[CreateUserRequest]
   implicit val formatUserType                  = EnumJson.enumFormat(UserTypes)
   implicit val formatService                   = Json.format[Service]
+
+  implicit val formatField            = Json.format[Field]
+  implicit val formatTestOrganisation = Json.format[TestOrganisation]
+
+  implicit val formatTestUser: Format[TestUser] = Union
+    .from[TestUser]("userType")
+    .and[TestOrganisation](ORGANISATION.toString)
+    .format
+
+  implicit val formatLoginRequest           = Json.format[LoginRequest]
+  implicit val formatAuthenticationResponse = Json.format[AuthenticationResponse]
 }

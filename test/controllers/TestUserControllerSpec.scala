@@ -59,9 +59,8 @@ class TestUserControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with
     val testUserViewGeneric              = app.injector.instanceOf[TestUserViewGeneric]
     val mockTestUserService              = mock[TestUserService]
     val mockApiPlatformTestUserConnector = mock[ApiPlatformTestUserConnector]
-    val selectedServices                 = Seq("common-transit-convention-traders")
     val svc                              = Seq(Service("ctc", "common-transit-convention-traders", Seq(UserTypes.ORGANISATION)))
-    val serviceKeys                      = Seq("common-transit-convention-traders")
+    val serviceKey                       = "common-transit-convention-traders"
 
     val routingUrls = Seq(
       "common-transit-convention-traders, http://localhost:9619/api-test-login/sign-in?continue=http://localhost:9485/manage-transit-movements"
@@ -79,9 +78,8 @@ class TestUserControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with
     )
 
     when(mockTestUserService.services(*)).thenReturn(successful(svc))
-    when(config.serviceKeys).thenReturn(serviceKeys)
-    when(config.routingLoginUrls).thenReturn(routingUrls)
-    when(mockTestUserService.createUser(eqTo(selectedServices))(*)).thenReturn(successful(organisation))
+    when(config.serviceKey).thenReturn(serviceKey)
+    when(mockTestUserService.createUser(eqTo(serviceKey))(*)).thenReturn(successful(organisation))
 
     def elementExistsById(doc: Document, id: String): Boolean = doc.select(s"#$id").asScala.nonEmpty
 
@@ -94,14 +92,15 @@ class TestUserControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with
       val result = execute(underTest.showCreateUserPageGeneric())
       val page   = contentAsString(result)
 
-      page should include("Create test user")
+      page should include("Common Transit Convention")
+      page should include("You can create a test user to manage movements in the sandbox environment")
+      page should include("If you already have a test user you can login to CTC")
 
-      // TODO add more page checks here
-
+      // TODO add more coverage
     }
   }
 
-  "createUser" should {
+  "createOrg" should {
 
     "create an organisation" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("serviceSelection", "common-transit-convention-traders"))

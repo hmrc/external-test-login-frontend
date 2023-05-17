@@ -27,6 +27,8 @@
 
 @title = {Test user}
 
+@url = { @{config.host}/external-test-login-frontend/sign-in/creds?userId=@{user.userId}&password=@{user.password} }
+
 @govUkWrapper(Some(s"$title  - HMRC External Test - GOV.UK")) {
   <h1 class="govuk-heading-xl">@title</h1>
 
@@ -35,19 +37,7 @@
     @field(Field("password", "Password", user.password))
     <!-- @user.fields.map(f => field(f)) -->
   </ul>
-
-  <p class="govuk-body govuk-!-padding-bottom-4">
-    <a class="govuk-link" href="@controllers.routes.TestUserController.showCreateUserPageGeneric()">
-      Add a new user
-    </a>
+  <p class="govuk-body">
+      Login to <a class="govuk-link" target="_blank" href=@{url}>CTC</a>
   </p>
-
-  @config.serviceKeys.map(key =>
-  config.routingLoginUrls.map(url =>
-    if(url.contains(key)) {
-        <p class="govuk-body">
-            Login to <a class="govuk-link" target="_blank" href={ url.split(",")(1) } > {  url.split(",")(0).replace("-", " ") } </a>
-        </p>
-    }
-  ))
 }

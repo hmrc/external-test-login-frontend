@@ -17,13 +17,14 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.{CreateUserRequest, Service, TestOrganisation}
+import models.JsonFormatters._
+import models._
 import play.api.http.Status.{CREATED, OK}
+import play.api.http.{HeaderNames, Status}
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import models.JsonFormatters._
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,14 +52,17 @@ class ApiPlatformTestUserConnector @Inject() (
     }
   }
 
-  def createOrganisation(enrolments: Seq[String])(implicit hc: HeaderCarrier): Future[TestOrganisation] = {
+  // TODO - why does this have to be an individual?
+  def createOrg(enrolments: Seq[String])(implicit hc: HeaderCarrier): Future[TestIndividual] = {
     val payload = CreateUserRequest(enrolments)
 
     post(s"$serviceUrl/organisations", payload) map {
       response =>
         response.status match {
-          case CREATED => response.json.as[TestOrganisation]
-          case _       => throw new RuntimeException(s"Unexpected response code=${response.status} message=${response.body}")
+          case CREATED =>
+            println(s"ACHI org: ${response.json}")
+            response.json.as[TestIndividual]
+          case _ => throw new RuntimeException(s"Unexpected response code=${response.status} message=${response.body}")
         }
     }
   }
@@ -71,6 +75,26 @@ class ApiPlatformTestUserConnector @Inject() (
       case Left(UpstreamErrorResponse(body, status, _, _)) =>
         throw new RuntimeException(s"Unexpected response code=$status message=$body")
       case _ => throw new RuntimeException(s"Unexpected response")
+    }
+
+  def authenticate(loginRequest: LoginRequest)(implicit hc: HeaderCarrier): Future[AuthenticatedSession] =
+    httpClient.POST[LoginRequest, Either[UpstreamErrorResponse, HttpResponse]](s"$serviceUrl/session", loginRequest) map {
+      case Right(response) =>
+        val authenticationResponse = response.json.as[AuthenticationResponse]
+
+        (response.header(HeaderNames.AUTHORIZATION), response.header(HeaderNames.LOCATION)) match {
+          case (Some(authBearerToken), Some(authorityUri)) =>
+            AuthenticatedSession(
+              authBearerToken,
+              authorityUri,
+              authenticationResponse.gatewayToken,
+              authenticationResponse.affinityGroup
+            )
+          case _ => throw new RuntimeException("Authorization and Location headers must be present in response")
+        }
+
+      case Left(UpstreamErrorResponse(_, Status.UNAUTHORIZED, _, _)) => throw LoginFailed(loginRequest.username)
+      case Left(err)                                                 => throw err
     }
 
   private def post(url: String, payload: CreateUserRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =

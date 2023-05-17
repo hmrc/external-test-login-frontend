@@ -52,6 +52,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
-  lazy val serviceKeys      = configuration.get[Seq[String]]("services")
-  lazy val routingLoginUrls = configuration.get[Seq[String]]("routing-login-urls")
+  lazy val serviceKey    = configuration.get[String]("service")
+  lazy val continueUrl   = configuration.get[String]("continue-url")
+  lazy val devHubBaseUrl = configuration.get[String]("dev-hub-base-url")
 }

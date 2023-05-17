@@ -17,7 +17,6 @@
 package models
 
 import scala.collection.immutable
-
 import play.api.libs.json._
 
 case class Field(key: String, label: String, value: String)

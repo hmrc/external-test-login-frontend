@@ -19,12 +19,9 @@ package controllers
 import config.FrontendAppConfig
 import connectors.ApiPlatformTestUserConnector
 import logger.ApplicationLogger
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TestUserService
-import uk.gov.hmrc.http.BadRequestException
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{CreateTestUserViewGeneric, TestUserViewGeneric}
@@ -47,59 +44,17 @@ class TestUserController @Inject() (
 
   def showCreateUserPageGeneric: Action[AnyContent] = Action.async {
     implicit request =>
-      testUserService.services.flatMap(
-        services =>
-          Future.successful(
-            Ok(
-              createTestUserGeneric(services.filter(
-                                      s => config.serviceKeys.contains(s.key)
-                                    ),
-                                    CreateUserForm.form
-              )
-            )
-          )
+      Future.successful(
+        Ok(
+          createTestUserGeneric()
+        )
       )
   }
 
   def createUserGeneric: Action[AnyContent] = Action.async {
     implicit request =>
-      def validForm(form: CreateUserForm) = {
-        val x = form.services
-
-        x match {
-          case Some(services) =>
-            testUserService.createUser(services.split(",").toSeq) map (
-              user => Ok(testUserGeneric(user))
-            )
-          case _ => Future.failed(new BadRequestException("Invalid request"))
-        }
-      }
-
-      def invalidForm(invalidForm: Form[CreateUserForm]) =
-        testUserService.services.flatMap(
-          services =>
-            Future.successful(
-              BadRequest(
-                createTestUserGeneric(services.filter(
-                                        s => config.serviceKeys.contains(s.key)
-                                      ),
-                                      invalidForm
-                )
-              )
-            )
-        )
-
-      CreateUserForm.form.bindFromRequest().fold(invalidForm, validForm)
+      testUserService.createUser(config.serviceKey) map (
+        user => Ok(testUserGeneric(user))
+      )
   }
-}
-
-case class CreateUserForm(services: Option[String])
-
-object CreateUserForm {
-
-  val form: Form[CreateUserForm] = Form(
-    mapping(
-      "serviceSelection" -> optional(text).verifying(FormKeys.createServicesNoChoiceKey, selectedServices => selectedServices.isDefined)
-    )(CreateUserForm.apply)(CreateUserForm.unapply)
-  )
 }

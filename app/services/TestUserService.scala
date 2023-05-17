@@ -17,7 +17,7 @@
 package services
 
 import connectors.ApiPlatformTestUserConnector
-import models.UserTypes.{ORGANISATION, UserType}
+import models.UserTypes.{INDIVIDUAL, ORGANISATION, UserType}
 import models.{Service, TestOrganisation, TestUser}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -28,18 +28,18 @@ class TestUserService @Inject() (apiPlatformTestUserConnector: ApiPlatformTestUs
 
   def services(implicit hc: HeaderCarrier): Future[Seq[Service]] = apiPlatformTestUserConnector.getServices()
 
-  def createUser(selectedServices: Seq[String])(implicit hc: HeaderCarrier): Future[TestUser] =
+  def createUser(selectedService: String)(implicit hc: HeaderCarrier): Future[TestUser] =
     for {
       services <- apiPlatformTestUserConnector.getServices()
       testUser <- createUserWithServices(
         services.filter(
-          x => selectedServices.contains(x.key)
+          x => x.key == selectedService
         )
       )
     } yield testUser
 
-  private def createUserWithServices(services: Seq[Service])(implicit hc: HeaderCarrier): Future[TestOrganisation] =
-    apiPlatformTestUserConnector.createOrganisation(serviceKeysForUserType(ORGANISATION, services))
+  private def createUserWithServices(services: Seq[Service])(implicit hc: HeaderCarrier): Future[TestUser] =
+    apiPlatformTestUserConnector.createOrg(serviceKeysForUserType(ORGANISATION, services))
 
   private def serviceKeysForUserType(userType: UserType, services: Seq[Service]): Seq[String] =
     services
