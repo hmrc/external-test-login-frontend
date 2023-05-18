@@ -22,7 +22,7 @@ import connectors.ApiPlatformTestUserConnector
 import helpers.AsyncHmrcSpec
 import logger.ApplicationLogger
 import models.UserTypes.{INDIVIDUAL, ORGANISATION}
-import models.{Field, FieldDefinition, NavLink, Service, TestOrganisation, UserTypes}
+import models.{Field, FieldDefinition, Service, TestOrganisation, UserTypes}
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
@@ -52,7 +52,6 @@ class TestUserControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with
 
     val config: FrontendAppConfig = mock[FrontendAppConfig]
 
-    val navLinks                         = Seq(NavLink("sign-in", "http://sign-in"))
     val fieldDefinitions                 = Seq(FieldDefinition("fieldDef1", "Field Def 1", Seq(INDIVIDUAL, ORGANISATION)))
     val mcc                              = app.injector.instanceOf[MessagesControllerComponents]
     val createTestUserViewGeneric        = app.injector.instanceOf[CreateTestUserViewGeneric]
