@@ -32,7 +32,7 @@ case class TestIndividual(userId: String, password: String, fields: Seq[Field]) 
   override val label = "Individual"
 }
 
-object TestIndividual extends TestIndividualJsonMapper(FieldDefinitions.get())
+object TestIndividual extends TestIndividualJsonMapper(FieldDefinitions.getCtc())
 
 class TestIndividualJsonMapper(fieldDefinitions: Seq[FieldDefinition]) extends TestUserMapper(fieldDefinitions) {
 
@@ -51,7 +51,7 @@ case class TestOrganisation(userId: String, password: String, fields: Seq[Field]
   override val label = "Organisation"
 }
 
-object TestOrganisation extends TestOrganisationJsonMapper(FieldDefinitions.get())
+object TestOrganisation extends TestOrganisationJsonMapper(FieldDefinitions.getCtc())
 
 class TestOrganisationJsonMapper(fieldDefinitions: Seq[FieldDefinition]) extends TestUserMapper(fieldDefinitions) {
 

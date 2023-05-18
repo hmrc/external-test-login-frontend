@@ -32,6 +32,10 @@
 @govUkWrapper(Some(s"$title  - HMRC External Test - GOV.UK")) {
   <h1 class="govuk-heading-xl">@title</h1>
 
+  <p class="govuk-body">
+      A test user can be used for multiple logins. You may wish to capture the User Id and Password and keep them somewhere safe for future use.
+  </p>
+
   <ul class="govuk-list govuk-list--bullet govuk-list--no-style">
     @field(Field("userid", "User ID", user.userId))
     @field(Field("password", "Password", user.password))

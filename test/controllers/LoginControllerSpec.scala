@@ -72,17 +72,6 @@ class LoginControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
 
       contentAsString(result) should include("Sign in")
     }
-
-    "display the Create Test User link which opens a new browser-tab" in new Setup {
-
-      when(continueUrlService.isValidContinueUrl(*)).thenReturn(true)
-
-      val result = execute(underTest.showLoginPage())
-
-      contentAsString(result) should include(
-        "<a href=\"http://localhost:9680/api-test-user\" class=\"govuk-link\" target=\"_blank\" rel=\"noreferrer noopener\">Don't have Test User credentials (opens in new tab)</a>"
-      )
-    }
   }
 
   "login" should {

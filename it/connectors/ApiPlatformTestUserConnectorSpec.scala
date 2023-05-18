@@ -93,10 +93,7 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
                            |      "postcode": "TS1 1PA"
                            |    }
                            |  },
-                           |  "saUtr":"1555369052",
-                           |  "empRef":"555/EIA000",
-                           |  "ctUtr":"1555369053",
-                           |  "vrn":"999902541"
+                           |  "eoriNumber":"1555369052"
                            |}""".stripMargin)
           )
       )
@@ -105,8 +102,7 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
 
       result.userId shouldBe userId
       result.password shouldBe password
-      result.fields should contain(Field("saUtr", "Self Assessment UTR", saUtr))
-      result.fields should contain(Field("empRef", "Employer Reference", empRef))
+      result.fields should contain(Field("eoriNumber", "Economic Operator Registration and Identification (EORI) number", saUtr))
     }
 
     "fail when api-platform-test-user returns a response that is not 201 CREATED" in new Setup {

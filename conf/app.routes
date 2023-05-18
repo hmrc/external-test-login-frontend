@@ -6,7 +6,7 @@ GET        /start                                        controllers.IndexContro
 
 GET        /create                                       controllers.TestUserController.showCreateUserPageGeneric()
 
-GET       /user/create                                  controllers.TestUserController.createUserGeneric()
+GET       /user/create                                   controllers.TestUserController.createUserGeneric()
 
 GET        /assets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)
 
