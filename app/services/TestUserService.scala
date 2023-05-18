@@ -18,7 +18,7 @@ package services
 
 import connectors.ApiPlatformTestUserConnector
 import models.UserTypes.{INDIVIDUAL, ORGANISATION, UserType}
-import models.{Service, TestOrganisation, TestUser}
+import models.{Service, TestIndividual, TestOrganisation, TestUser}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -38,7 +38,7 @@ class TestUserService @Inject() (apiPlatformTestUserConnector: ApiPlatformTestUs
       )
     } yield testUser
 
-  private def createUserWithServices(services: Seq[Service])(implicit hc: HeaderCarrier): Future[TestUser] =
+  private def createUserWithServices(services: Seq[Service])(implicit hc: HeaderCarrier): Future[TestIndividual] =
     apiPlatformTestUserConnector.createOrg(serviceKeysForUserType(ORGANISATION, services))
 
   private def serviceKeysForUserType(userType: UserType, services: Seq[Service]): Seq[String] =

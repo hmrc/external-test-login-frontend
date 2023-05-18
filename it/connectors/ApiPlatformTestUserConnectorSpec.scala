@@ -19,15 +19,17 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
 import helpers.{AsyncHmrcSpec, WiremockSugar}
-import models.{Field, Service, UserTypes}
+import models.{AuthenticatedSession, Field, LoginFailed, LoginRequest, Service, UserTypes}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.{Application, Configuration, Environment}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import models.JsonFormatters._
+import play.api.http.HeaderNames.{AUTHORIZATION, LOCATION}
+import play.api.libs.json.Json.toJson
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -38,21 +40,8 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
       .configure(("metrics.jvm", false))
       .build()
 
-  private val individualUserId   = "individual"
-  private val individualPassword = "pwd"
-  private val individualSaUtr    = "1555369052"
-  private val individualNino     = "CC333333C"
-  private val individualVrn      = "999902541"
-
-  private val jsonTestIndividual = s"""
-                                      |{
-                                      |  "userId":"$individualUserId",
-                                      |  "password":"$individualPassword",
-                                      |  "saUtr":"$individualSaUtr",
-                                      |  "nino":"$individualNino",
-                                      |  "vrn":"$individualVrn"
-                                      |}
-    """.stripMargin
+  private val loginRequest = LoginRequest("user", "password")
+  private val loginPayload = Json.toJson(LoginRequest("user", "password")).toString
 
   trait Setup {
     implicit val hc = HeaderCarrier()
@@ -168,5 +157,61 @@ class ApiPlatformTestUserConnectorSpec extends AsyncHmrcSpec with WiremockSugar 
         intercept[RuntimeException](await(underTest.getServices()))
       }
     }
+  }
+
+  "authenticate" should {
+    "return the auth session when the credentials are valid" in new Setup {
+      val authBearerToken = "Bearer AUTH_TOKEN"
+      val userOid         = "/auth/oid/12345"
+      val gatewayToken    = "GG_TOKEN"
+      val affinityGroup   = "Individual"
+
+      stubFor(
+        post(urlEqualTo("/session"))
+          .withRequestBody(equalToJson(loginPayload))
+          .willReturn(
+            aResponse()
+              .withStatus(CREATED)
+              .withBody(Json.obj("gatewayToken" -> gatewayToken, "affinityGroup" -> affinityGroup).toString())
+              .withHeader(AUTHORIZATION, authBearerToken)
+              .withHeader(LOCATION, userOid)
+          )
+      )
+
+      val result = await(underTest.authenticate(loginRequest))
+
+      result shouldBe AuthenticatedSession(authBearerToken, userOid, gatewayToken, affinityGroup)
+    }
+
+    "fail with LoginFailed when the credentials are not valid" in new Setup {
+      stubFor(
+        post(urlEqualTo("/session"))
+          .withRequestBody(equalToJson(toJson(loginRequest).toString()))
+          .willReturn(
+            aResponse()
+              .withStatus(UNAUTHORIZED)
+          )
+      )
+
+      intercept[LoginFailed] {
+        await(underTest.authenticate(loginRequest))
+      }
+    }
+
+    "fail when the authenticate call returns an error" in new Setup {
+      stubFor(
+        post(urlEqualTo("/session"))
+          .withRequestBody(equalToJson(loginPayload))
+          .willReturn(
+            aResponse()
+              .withStatus(INTERNAL_SERVER_ERROR)
+          )
+      )
+
+      intercept[UpstreamErrorResponse] {
+        await(underTest.authenticate(loginRequest))
+      }.statusCode shouldBe INTERNAL_SERVER_ERROR
+    }
+
   }
 }

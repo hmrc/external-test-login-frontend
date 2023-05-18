@@ -52,7 +52,7 @@ class ApiPlatformTestUserConnector @Inject() (
     }
   }
 
-  // TODO - why does this have to be an individual?
+  // TODO - why does this have to be a TestIndividual and not a TestOrganisation?
   def createOrg(enrolments: Seq[String])(implicit hc: HeaderCarrier): Future[TestIndividual] = {
     val payload = CreateUserRequest(enrolments)
 
@@ -60,7 +60,6 @@ class ApiPlatformTestUserConnector @Inject() (
       response =>
         response.status match {
           case CREATED =>
-            println(s"ACHI org: ${response.json}")
             response.json.as[TestIndividual]
           case _ => throw new RuntimeException(s"Unexpected response code=${response.status} message=${response.body}")
         }
