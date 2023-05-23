@@ -1,0 +1,47 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.TestUser
+@import models.Field
+
+@import views.html.field
+@import views.html.govuk_wrapper
+@import config.FrontendAppConfig
+
+@this(govUkWrapper: govuk_wrapper)
+
+@(user: TestUser)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+
+@title = {Test user}
+
+@url = { @{config.host}/external-test-login-frontend/sign-in/creds?userId=@{user.userId}&password=@{user.password} }
+
+@govUkWrapper(Some(s"$title  - HMRC External Test - GOV.UK")) {
+  <h1 class="govuk-heading-xl">@title</h1>
+
+  <p class="govuk-body">
+      A test user can be used for multiple logins. You may wish to capture the User Id and Password and keep them somewhere safe for future use.
+  </p>
+
+  <ul class="govuk-list govuk-list--bullet govuk-list--no-style">
+    @field(Field("userid", "User ID", user.userId))
+    @field(Field("password", "Password", user.password))
+    <!-- @user.fields.map(f => field(f)) -->
+  </ul>
+  <p class="govuk-body">
+      Login to <a class="govuk-link" target="_blank" href=@{url}>CTC</a>
+  </p>
+}

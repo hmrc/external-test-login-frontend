@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+case class LoginRequest(username: String, password: String)
 
-object implicits extends ImplicitConversions
+case class AuthenticatedSession(authBearerToken: String, authorityURI: String, gatewayToken: String, affinityGroup: String)
 
-trait ImplicitConversions {
-
-  implicit def stringToText(string: String)(implicit messages: Messages): Text =
-    Text(messages(string))
-
-  implicit def stringToKey(string: String)(implicit messages: Messages): Key =
-    Key(content = Text(messages(string)))
-}
+case class AuthenticationResponse(gatewayToken: String, affinityGroup: String)

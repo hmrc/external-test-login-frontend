@@ -1,0 +1,57 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.FieldDefinitions
+@import models.UserTypes.{INDIVIDUAL, ORGANISATION}
+@import views.html.govuk_wrapper
+@import config.FrontendAppConfig
+@import models.Service
+@import views.html.includes._
+
+
+@this(govUkWrapper: govuk_wrapper)
+
+@()(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+
+@govUkWrapper(pageTitle = Some("Create a CTC test user - HMRC External Test - GOV.UK")) {
+    <h1 class="govuk-heading-xl">Common Transit Convention - NCTS</h1>
+    <p class="govuk-body">
+        You can create a test user to manage movements in the sandbox environment.
+    </p>
+    <p class="govuk-body">
+        A test user is a dummy Government Gateway user ID used for testing NCTS in the sandbox with the required CTC enrolment.
+    </p>
+    <p class="govuk-body">
+        A test user has:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>a user name</li>
+        <li>a password</li>
+        <li>a service enrolment</li>
+    </ul>
+    <p class="govuk-body">
+        A test user can be used for multiple logins. You may wish to capture the User Id and Password and keep them somewhere safe for future use.
+    </p>
+
+    <p class="govuk-body">
+        If you already have a test user you can login to CTC <a class="govuk-link" target="_blank" href="/external-test-login-frontend/sign-in">here</a> or;
+    </p>
+
+    <p class="govuk-body">
+        You can <a class="govuk-link" target="_blank" href="/external-test-login-frontend/user/create">create a new CTC user</a>
+    </p>
+
+}

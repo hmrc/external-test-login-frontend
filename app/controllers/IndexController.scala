@@ -28,6 +28,7 @@ class IndexController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
+  // TODO - left this in in case we want a splash or landing screen
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
       Ok(view())

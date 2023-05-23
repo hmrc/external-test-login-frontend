@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package viewmodels
+@import models.Field
+@(field: Field)
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
-
-object implicits extends ImplicitConversions
-
-trait ImplicitConversions {
-
-  implicit def stringToText(string: String)(implicit messages: Messages): Text =
-    Text(messages(string))
-
-  implicit def stringToKey(string: String)(implicit messages: Messages): Key =
-    Key(content = Text(messages(string)))
-}
+<li>
+  <p class="govuk-body" class="form-label-bold" id="@field.key.toLowerCase-label"><b>@field.label</b></p>
+  <p class="govuk-body govuk-body--word-wrap" data-@field.key.toLowerCase>@field.value</p>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+</li>

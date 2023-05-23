@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package viewmodels
+package services
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+import config.FrontendAppConfig
 
-object implicits extends ImplicitConversions
+import javax.inject.{Inject, Singleton}
 
-trait ImplicitConversions {
+@Singleton
+class ContinueUrlService @Inject() (appConfig: FrontendAppConfig) {
 
-  implicit def stringToText(string: String)(implicit messages: Messages): Text =
-    Text(messages(string))
+  private lazy val continueUrl = appConfig.continueUrl
 
-  implicit def stringToKey(string: String)(implicit messages: Messages): Key =
-    Key(content = Text(messages(string)))
+  def isValidContinueUrl(url: String): Boolean = {
+    val strippedUrl = stripQueryParameters(url)
+    strippedUrl == continueUrl
+  }
+
+  private def stripQueryParameters(url: String) = url.split('?')(0)
 }
